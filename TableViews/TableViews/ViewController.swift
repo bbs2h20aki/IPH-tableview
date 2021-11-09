@@ -24,6 +24,13 @@ class ViewController: UIViewController {
         navigationItem.rightBarButtonItem = editButtonItem
         
         title = "Games"
+        
+        //leere uiview
+        myTableView.tableFooterView = UIView()
+    }
+    override func setEditing(_ editing: Bool, animated: Bool) {
+        super.setEditing(!isEditing, animated: true)
+        myTableView.setEditing(!myTableView.isEditing, animated: true)
     }
 
 
@@ -46,5 +53,23 @@ extension ViewController: UITableViewDataSource {
 }
 
 extension ViewController: UITableViewDelegate{
-    
+    //cell bewgegen
+    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        let selectedGame = games[sourceIndexPath.row]
+        //löschen aus dem array
+        games.remove(at: sourceIndexPath.row)
+        
+        games.insert(selectedGame, at: destinationIndexPath.row)
+    }
+    //löschen der cells
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete{
+            games.remove(at: indexPath.row)
+            //löschen aus der tableview
+            myTableView.deleteRows(at: [indexPath], with: .automatic)
+        }
+    }
 }
